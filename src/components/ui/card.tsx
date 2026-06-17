@@ -1,0 +1,19 @@
+import { cn } from '@/lib/utils'
+
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode
+}
+
+export function Card({ children, className, ...props }: CardProps) {
+  return (
+    <div
+      className={cn(
+        'bg-[#111113] border border-[#1F1F23] rounded-xl p-4',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
