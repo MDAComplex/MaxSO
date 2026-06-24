@@ -47,161 +47,111 @@ export default function RoutineRunner({ routine, onClose }: Props) {
   useEffect(() => {
     if (!running || done) return
     intervalRef.current = setInterval(() => {
-      setTimeLeft((t) => {
-        if (t <= 1) {
-          advance()
-          return 0
-        }
-        return t - 1
-      })
+      setTimeLeft((t) => { if (t <= 1) { advance(); return 0 } return t - 1 })
     }, 1000)
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [running, done, advance])
 
-  function skip() {
-    if (intervalRef.current) clearInterval(intervalRef.current)
-    advance()
-  }
+  function skip() { if (intervalRef.current) clearInterval(intervalRef.current); advance() }
+  function togglePause() { setRunning((r) => !r) }
 
-  function togglePause() {
-    setRunning((r) => !r)
-  }
-
-  // Close on Escape
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
-      if (e.key === ' ') togglePause()
+      if (e.key === ' ') { e.preventDefault(); togglePause() }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  // Ring progress
   const RADIUS = 110
   const CIRC = 2 * Math.PI * RADIUS
-  const stepProgress = currentStep
-    ? 1 - timeLeft / currentStep.duration
-    : 1
+  const stepProgress = currentStep ? 1 - timeLeft / currentStep.duration : 1
   const ringOffset = CIRC - stepProgress * CIRC
 
   return (
     <div className="fixed inset-0 z-50 bg-[#0A0A0B] flex flex-col">
-      {/* Top bar */}
+      {/* Top */}
       <div className="flex items-center justify-between px-6 pt-6 pb-2">
         <div className="flex items-center gap-2">
           <span className="text-lg">{routine.emoji}</span>
-          <span className="text-sm font-medium text-[#71717A]">{routine.name}</span>
+          <span className="text-sm font-medium text-zinc-400">{routine.name}</span>
         </div>
-        <button onClick={onClose}
-          className="p-2 rounded-xl text-[#3F3F46] hover:text-[#F4F4F5] hover:bg-[#111113] transition-colors">
+        <button onClick={onClose} className="p-2 rounded-xl text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-colors">
           <X size={18} />
         </button>
       </div>
 
-      {/* Overall progress bar */}
+      {/* Progress bar */}
       <div className="px-6 mb-6">
-        <div className="h-0.5 bg-[#1F1F23] rounded-full overflow-hidden">
-          <div className="h-full bg-[#38BDF8] rounded-full transition-all duration-1000"
-            style={{ width: `${progress * 100}%` }} />
+        <div className="h-0.5 bg-zinc-800 rounded-full overflow-hidden">
+          <div className="h-full bg-sky-400 rounded-full transition-all duration-1000" style={{ width: `${progress * 100}%` }} />
         </div>
         <div className="flex justify-between mt-1.5">
-          <span className="text-[10px] text-[#3F3F46]">
-            Schritt {stepIndex + 1} / {routine.steps.length}
-          </span>
-          <span className="text-[10px] text-[#3F3F46]">
-            {fmtTime(Math.round((1 - progress) * total))} verbleibend
-          </span>
+          <span className="text-[10px] text-zinc-600">Schritt {stepIndex + 1} / {routine.steps.length}</span>
+          <span className="text-[10px] text-zinc-600">{fmtTime(Math.round((1 - progress) * total))} verbleibend</span>
         </div>
       </div>
 
       {done ? (
-        /* ── Done screen ── */
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-8">
-          <div className="w-24 h-24 rounded-full bg-[#34D399]/10 border border-[#34D399]/30 flex items-center justify-center">
-            <Check size={40} className="text-[#34D399]" strokeWidth={2.5} />
+          <div className="w-24 h-24 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
+            <Check size={40} className="text-emerald-400" strokeWidth={2.5} />
           </div>
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-[#F4F4F5] mb-2">Fertig! 🎉</h2>
-            <p className="text-[#71717A]">
-              {routine.name} abgeschlossen · {fmtTime(total)}
-            </p>
+            <h2 className="text-3xl font-bold text-white mb-2">Fertig! 🎉</h2>
+            <p className="text-zinc-400">{routine.name} · {fmtTime(total)}</p>
           </div>
-          <button onClick={onClose}
-            className="bg-[#38BDF8] text-[#0A0A0B] font-semibold rounded-2xl px-8 py-3.5 text-base hover:bg-[#7DD3FC] transition-colors">
+          <button onClick={onClose} className="bg-sky-400 text-zinc-900 font-semibold rounded-2xl px-8 py-3.5 text-base hover:bg-sky-300 transition-colors">
             Schließen
           </button>
         </div>
       ) : (
-        /* ── Active step ── */
         <div className="flex-1 flex flex-col items-center justify-center gap-8 px-6">
-          {/* Ring timer */}
+          {/* Ring */}
           <div className="relative">
             <svg width={260} height={260} className="-rotate-90">
-              <circle cx={130} cy={130} r={RADIUS} fill="none" stroke="#1F1F23" strokeWidth="8" />
-              <circle cx={130} cy={130} r={RADIUS}
-                fill="none"
-                stroke="#38BDF8"
-                strokeWidth="8"
-                strokeLinecap="round"
-                strokeDasharray={CIRC}
-                strokeDashoffset={ringOffset}
-                style={{ transition: running ? 'stroke-dashoffset 1s linear' : 'none' }}
-              />
+              <circle cx={130} cy={130} r={RADIUS} fill="none" stroke="#27272A" strokeWidth="8" />
+              <circle cx={130} cy={130} r={RADIUS} fill="none" stroke="#38BDF8" strokeWidth="8"
+                strokeLinecap="round" strokeDasharray={CIRC} strokeDashoffset={ringOffset}
+                style={{ transition: running ? 'stroke-dashoffset 1s linear' : 'none' }} />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-5xl mb-1">{currentStep?.emoji}</span>
-              <span className="text-4xl font-bold text-[#F4F4F5] tabular-nums font-mono">
-                {fmtTime(timeLeft)}
-              </span>
+              <span className="text-4xl font-bold text-white font-mono tabular-nums">{fmtTime(timeLeft)}</span>
             </div>
           </div>
 
-          {/* Step name */}
-          <div className="text-center">
-            <h2 className="text-2xl font-semibold text-[#F4F4F5]">{currentStep?.name}</h2>
-          </div>
+          <h2 className="text-2xl font-semibold text-white">{currentStep?.name}</h2>
 
-          {/* Next step */}
           {nextStep && (
-            <div className="flex items-center gap-2 bg-[#111113] border border-[#1F1F23] rounded-xl px-4 py-2.5">
-              <span className="text-[11px] text-[#3F3F46] uppercase tracking-wider">Danach</span>
+            <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5">
+              <span className="text-[11px] text-zinc-500 uppercase tracking-wider">Danach</span>
               <span className="text-sm">{nextStep.emoji}</span>
-              <span className="text-sm text-[#71717A]">{nextStep.name}</span>
-              <span className="text-xs text-[#3F3F46] ml-1">· {fmtTime(nextStep.duration)}</span>
+              <span className="text-sm text-zinc-400">{nextStep.name}</span>
+              <span className="text-xs text-zinc-600 ml-1">· {fmtTime(nextStep.duration)}</span>
             </div>
           )}
 
-          {/* Controls */}
           <div className="flex items-center gap-4">
             <button onClick={togglePause}
-              className={cn(
-                'w-16 h-16 rounded-full flex items-center justify-center transition-all',
-                'bg-[#38BDF8] text-[#0A0A0B] hover:bg-[#7DD3FC] shadow-lg shadow-[#38BDF8]/20'
-              )}>
-              {running
-                ? <Pause size={24} fill="currentColor" />
-                : <Play size={24} fill="currentColor" className="ml-1" />
-              }
+              className="w-16 h-16 rounded-full bg-sky-400 text-zinc-900 flex items-center justify-center hover:bg-sky-300 transition-colors shadow-lg shadow-sky-400/20">
+              {running ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
             </button>
             <button onClick={skip}
-              className="w-12 h-12 rounded-full bg-[#18181B] border border-[#27272A] flex items-center justify-center text-[#52525B] hover:text-[#A1A1AA] hover:bg-[#27272A] transition-colors">
+              className="w-12 h-12 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 transition-colors">
               <SkipForward size={18} />
             </button>
           </div>
-
-          <p className="text-[11px] text-[#2A2A2A]">Leertaste = Pause · ESC = Beenden</p>
+          <p className="text-[11px] text-zinc-700">Leertaste = Pause · ESC = Beenden</p>
         </div>
       )}
 
-      {/* Step dots at bottom */}
       <div className="flex justify-center gap-1.5 pb-10">
         {routine.steps.map((_, i) => (
-          <div key={i} className={cn(
-            'rounded-full transition-all duration-300',
-            i < stepIndex ? 'w-1.5 h-1.5 bg-[#38BDF8]' :
-            i === stepIndex ? 'w-4 h-1.5 bg-[#38BDF8]' :
-            'w-1.5 h-1.5 bg-[#27272A]'
+          <div key={i} className={cn('rounded-full transition-all duration-300',
+            i < stepIndex ? 'w-1.5 h-1.5 bg-sky-400' :
+            i === stepIndex ? 'w-4 h-1.5 bg-sky-400' : 'w-1.5 h-1.5 bg-zinc-800'
           )} />
         ))}
       </div>
