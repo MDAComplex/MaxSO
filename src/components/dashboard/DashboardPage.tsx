@@ -69,12 +69,16 @@ function Inner() {
           <div className="space-y-4">
             {tab === 'home' && (
               <>
-                <CountdownWidget />
                 <HabitTracker />
                 <RoutineBuilder onStart={(r) => setActiveRoutine(r)} />
               </>
             )}
-            {tab === 'timeline' && <MilestoneTimeline />}
+            {tab === 'timeline' && (
+              <>
+                <CountdownWidget />
+                <MilestoneTimeline />
+              </>
+            )}
             {tab === 'journal' && <ReflectionJournal />}
             {tab === 'stats' && <StatsPage />}
           </div>
