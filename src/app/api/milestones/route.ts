@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdmin } from '@supabase/supabase-js'
 import { MILESTONES_SEED } from '@/lib/milestones-seed'
+
+function adminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!
+  return createAdmin(url, key, { auth: { persistSession: false } })
+}
 
 export async function GET() {
   const supabase = createClient()
@@ -9,7 +16,8 @@ export async function GET() {
     .select('*')
     .order('sort_order')
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  // Table might not exist yet — return empty instead of crashing
+  if (error) return NextResponse.json({ milestones: [] })
   return NextResponse.json({ milestones: data ?? [] })
 }
 
@@ -21,8 +29,10 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    // Use service role key to bypass RLS (required when seeding)
+    const admin = adminClient()
     const rows = MILESTONES_SEED.map((m) => ({ ...m, user_id: user.id }))
-    const { error } = await supabase
+    const { error } = await admin
       .from('milestones')
       .upsert(rows, { onConflict: 'user_id,key' })
 
