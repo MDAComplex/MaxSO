@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:milestones": "ts-node --skip-project scripts/seed-milestones.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.1",
     "@supabase/supabase-js": "^2.45.4",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
     "lucide-react": "^0.446.0",
     "next": "14.2.15",
     "next-pwa": "^5.6.0",
@@ -30,6 +32,7 @@
     "eslint-config-next": "14.2.15",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
