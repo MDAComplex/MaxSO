@@ -11,6 +11,7 @@ import MilestoneTimeline from '@/components/timeline/MilestoneTimeline'
 import ReflectionJournal from '@/components/journal/ReflectionJournal'
 import StatsPage from '@/components/stats/StatsPage'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
+import CountdownWidget from '@/components/home/CountdownWidget'
 import { LogOut, Home, Map, BookOpen, BarChart2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -68,6 +69,7 @@ function Inner() {
           <div className="space-y-4">
             {tab === 'home' && (
               <>
+                <CountdownWidget />
                 <HabitTracker />
                 <RoutineBuilder onStart={(r) => setActiveRoutine(r)} />
               </>
