@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { differenceInCalendarDays, format, parseISO } from 'date-fns'
 import { de } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
-import { Check, Edit2, Database, ChevronRight } from 'lucide-react'
+import { Check, Database, ChevronRight } from 'lucide-react'
 
 type Confidence = 'fixed' | 'estimate'
 type Category = 'phase' | 'bm' | 'fh' | 'yonsei' | 'exchange'
@@ -21,6 +21,14 @@ interface Milestone {
   confidence: Confidence
   note: string | null
   sort_order: number
+}
+
+const CAT_EMOJI: Record<string, string> = {
+  p2_ende: '🏁', p3_start: '🚀', p3_checkpoint: '🔍', p4_start: '⚡',
+  bm_start: '📚', bm_hs_ende: '❄️', bm_fs_start: '🌱', bm_pruefungen: '📝', bm_abschluss: '🎓',
+  fh_frist: '📬', fh_start: '🏛️', fh_abschluss: '🎓',
+  yonsei_after_fh: '🇰🇷', yonsei_b_frist_fall: '📬', yonsei_b_frist_spr: '📬', yonsei_b_start: '🇰🇷', yonsei_b_abschluss: '🎓',
+  exchange_apply: '📮', exchange_start: '✈️', exchange_ende: '🏠',
 }
 
 const CAT_COLOR: Record<Category, { line: string; node: string; badge: string; text: string }> = {
@@ -106,20 +114,17 @@ function HeroCard({ milestone }: { milestone: Milestone }) {
   )
 }
 
-function MilestoneNode({ milestone, isNext, onEdit }: {
-  milestone: Milestone
-  isNext: boolean
-  onEdit: (id: string, current: string) => void
-}) {
+function MilestoneNode({ milestone, isNext }: { milestone: Milestone; isNext: boolean }) {
   const { label, past, isToday } = countdown(milestone.target_date)
   const c = CAT_COLOR[milestone.category]
   const pct = progressPct(milestone.phase_start, milestone.target_date)
+  const emoji = CAT_EMOJI[milestone.key] ?? '📌'
 
   return (
-    <div className={cn('pl-8 pb-5 relative', past && 'opacity-50')}>
+    <div className={cn('pl-8 pb-4 relative', past && 'opacity-45')}>
       {/* Node */}
       <div className={cn(
-        'absolute left-0 top-1 w-4 h-4 rounded-full border-2 flex items-center justify-center -translate-x-[7px] z-10',
+        'absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 flex items-center justify-center -translate-x-[7px] z-10',
         past ? 'bg-[var(--bg-surface)] border-[var(--bg-border)]' : c.node,
         isNext && 'border-[var(--accent)] bg-[var(--accent)]/20'
       )}>
@@ -128,43 +133,41 @@ function MilestoneNode({ milestone, isNext, onEdit }: {
 
       {/* Card */}
       <div className={cn(
-        'rounded-xl border p-3.5 transition-all',
-        past ? 'border-[var(--bg-border)] bg-[var(--bg-surface)]' : 'border-[var(--bg-border)] bg-[var(--bg-surface)] hover:border-[var(--bg-border-hover)]',
-        isNext && 'border-[var(--accent)]/30 bg-[var(--bg-surface)]',
+        'rounded-xl border p-3.5',
+        'border-[var(--bg-border)] bg-[var(--bg-surface)]',
+        isNext && 'border-[var(--accent)]/40',
         milestone.confidence === 'estimate' && !past && 'border-dashed'
       )}>
-        <div className="flex items-start gap-2">
+        <div className="flex items-center gap-3">
+          {/* Emoji */}
+          <span className="text-xl shrink-0">{emoji}</span>
+
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap mb-0.5">
-              <span className="text-sm font-medium text-[var(--text-primary)]">{milestone.label}</span>
-              {milestone.confidence === 'estimate' && (
-                <span className="text-[10px] text-[var(--text-tertiary)] border border-dashed border-[var(--bg-border)] px-1.5 py-0.5 rounded">ca.</span>
-              )}
-            </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className={cn('font-mono text-xs', past ? 'text-[var(--text-tertiary)]' : isToday ? 'text-amber-400' : c.text)}>
-                {label}
-              </span>
-              <span className="text-xs text-[var(--text-tertiary)]">
-                {format(parseISO(milestone.target_date), 'dd.MM.yyyy', { locale: de })}
-              </span>
-              {milestone.confidence === 'estimate' && !past && (
-                <button onClick={() => onEdit(milestone.id, milestone.target_date)}
-                  className="flex items-center gap-1 text-[10px] text-[var(--text-tertiary)] hover:text-[var(--accent)] transition-colors">
-                  <Edit2 size={10} /> Anpassen
-                </button>
-              )}
-            </div>
+            <p className="text-sm font-medium text-[var(--text-primary)] leading-tight">{milestone.label}</p>
+            <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
+              {format(parseISO(milestone.target_date), 'dd.MM.yyyy', { locale: de })}
+              {milestone.confidence === 'estimate' && <span className="ml-1">ca.</span>}
+            </p>
             {milestone.note && (
-              <p className="text-xs text-[var(--text-tertiary)] mt-1.5 leading-relaxed">{milestone.note}</p>
+              <p className="text-[11px] text-[var(--text-tertiary)] mt-1 leading-relaxed">{milestone.note}</p>
             )}
+          </div>
+
+          {/* Countdown pill */}
+          <div className={cn(
+            'shrink-0 px-2.5 py-1 rounded-lg text-xs font-mono font-semibold',
+            past ? 'bg-[var(--bg-elevated)] text-[var(--text-tertiary)]' :
+            isToday ? 'bg-amber-400/15 text-amber-300' :
+            c.badge
+          )}>
+            {label}
           </div>
         </div>
 
         {milestone.phase_start && !past && (
-          <div className="mt-2.5">
+          <div className="mt-2.5 pl-8">
             <div className="h-1 rounded-full bg-[var(--bg-elevated)] overflow-hidden">
-              <div className={cn('h-full rounded-full transition-all duration-700',
+              <div className={cn('h-full rounded-full',
                 milestone.category === 'phase' || milestone.category === 'bm' ? 'bg-sky-400' :
                 milestone.category === 'fh' ? 'bg-emerald-400' :
                 milestone.category === 'yonsei' ? 'bg-rose-400' : 'bg-violet-400'
@@ -180,52 +183,12 @@ function MilestoneNode({ milestone, isNext, onEdit }: {
   )
 }
 
-function EditModal({ id, current, onSave, onClose }: {
-  id: string; current: string
-  onSave: (id: string, date: string) => void
-  onClose: () => void
-}) {
-  const [val, setVal] = useState(current)
-  const [saving, setSaving] = useState(false)
-
-  async function save() {
-    setSaving(true)
-    await fetch('/api/milestones', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, target_date: val }),
-    })
-    onSave(id, val)
-    onClose()
-  }
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-      <div className="bg-[var(--bg-surface)] border border-[var(--bg-border)] rounded-2xl p-6 w-full max-w-sm">
-        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Datum anpassen</h3>
-        <input type="date" value={val} onChange={(e) => setVal(e.target.value)}
-          className="w-full bg-[var(--bg-elevated)] border border-[var(--bg-border)] rounded-xl px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)] mb-4" />
-        <div className="flex gap-2">
-          <button onClick={save} disabled={saving}
-            className="flex-1 bg-[var(--accent)] text-[#0A0A0B] font-semibold rounded-xl py-2.5 text-sm hover:opacity-90 transition-opacity disabled:opacity-50">
-            Speichern
-          </button>
-          <button onClick={onClose}
-            className="px-4 rounded-xl border border-[var(--bg-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors text-sm">
-            Abbrechen
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 export default function MilestoneTimeline() {
   const [milestones, setMilestones] = useState<Milestone[]>([])
   const [scenario, setScenario] = useState<'A' | 'B' | 'C'>('A')
   const [loading, setLoading] = useState(true)
   const [seeding, setSeeding] = useState(false)
-  const [editTarget, setEditTarget] = useState<{ id: string; current: string } | null>(null)
 
   const load = useCallback(async () => {
     const res = await fetch('/api/milestones')
@@ -245,14 +208,6 @@ export default function MilestoneTimeline() {
     })
     await load()
     setSeeding(false)
-  }
-
-  function handleEdit(id: string, current: string) {
-    setEditTarget({ id, current })
-  }
-
-  function handleSaved(id: string, date: string) {
-    setMilestones((prev) => prev.map((m) => m.id === id ? { ...m, target_date: date } : m))
   }
 
   const visible = milestones.filter((m) => m.scenario === null || m.scenario === scenario)
@@ -313,7 +268,7 @@ export default function MilestoneTimeline() {
         <div className="mb-2">
           <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-widest mb-3 pl-8">Phase & BM</p>
           {base.map((m) => (
-            <MilestoneNode key={m.id} milestone={m} isNext={nextMilestone?.id === m.id} onEdit={handleEdit} />
+            <MilestoneNode key={m.id} milestone={m} isNext={nextMilestone?.id === m.id} />
           ))}
         </div>
 
@@ -330,20 +285,12 @@ export default function MilestoneTimeline() {
               <div className="h-px flex-1 bg-[var(--bg-border)]" />
             </div>
             {branch.map((m) => (
-              <MilestoneNode key={m.id} milestone={m} isNext={nextMilestone?.id === m.id} onEdit={handleEdit} />
+              <MilestoneNode key={m.id} milestone={m} isNext={nextMilestone?.id === m.id} />
             ))}
           </>
         )}
       </div>
 
-      {editTarget && (
-        <EditModal
-          id={editTarget.id}
-          current={editTarget.current}
-          onSave={handleSaved}
-          onClose={() => setEditTarget(null)}
-        />
-      )}
     </div>
   )
 }
