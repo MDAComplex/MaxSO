@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -9,31 +10,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: {
-          base: '#0A0A0B',
-          surface: '#111113',
-          elevated: '#18181B',
-          border: '#1F1F23',
-          borderHover: '#2A2A30',
-        },
-        text: {
-          primary: '#F4F4F5',
-          secondary: '#A1A1AA',
-          tertiary: '#52525B',
-        },
-        accent: {
-          DEFAULT: '#38BDF8',
-          dim: '#0EA5E9',
-          subtle: 'rgba(56,189,248,0.1)',
-          border: 'rgba(56,189,248,0.25)',
-        },
+        surface: 'var(--bg-surface)',
+        base: 'var(--bg-base)',
+        elevated: 'var(--bg-elevated)',
+        border: 'var(--bg-border)',
+        accent: 'var(--accent)',
+        primary: 'var(--text-primary)',
+        secondary: 'var(--text-secondary)',
+        muted: 'var(--text-tertiary)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-      borderRadius: {
-        xl: '0.75rem',
-        '2xl': '1rem',
+        mono: ['JetBrains Mono', 'monospace'],
       },
     },
   },
