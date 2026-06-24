@@ -1,46 +1,40 @@
-export type EventSource = 'calendar' | 'todoist' | 'routine'
-
-export interface CalendarEvent {
-  id: string
-  title: string
-  startTime: string // "HH:MM"
-  endTime: string
-  source: EventSource
-  color?: string
-  location?: string
-  description?: string
-  todoistId?: string
-  completed?: boolean
+export interface WhoopRecovery {
+  date: string
+  recovery_score: number
+  hrv_rmssd_milli: number
+  resting_heart_rate: number
+  user_calibrating: boolean
 }
 
-export interface Todo {
-  id: string
-  title: string
-  completed: boolean
-  priority?: 1 | 2 | 3 | 4
-  dueTime?: string
-  project?: string
-  source?: 'todoist' | 'local'
-  todoistId?: string
+export interface WhoopSleep {
+  date: string
+  total_in_bed_time_milli: number
+  total_sleep_time_milli: number
+  sleep_performance_percentage: number
+  sleep_efficiency_percentage: number
+  sleep_consistency_percentage: number
+  disturbances: number
+  latency_milli: number
+  light_sleep_time_milli: number
+  slow_wave_sleep_time_milli: number
+  rem_sleep_time_milli: number
 }
 
-export interface Routine {
-  id: string
-  title: string
-  emoji: string
-  completed: boolean
-  streak: number
-  time?: string
+export interface WhoopWorkout {
+  id: number
+  sport_name: string
+  strain: number
+  average_heart_rate: number
+  max_heart_rate: number
+  kilojoule: number
+  duration_milli: number
+  start: string
 }
 
-export interface WhoopData {
-  recovery: number // 0-100
-  hrv: number
-  restingHr: number
-  sleep: {
-    duration: number // hours
-    performance: number // 0-100
-    efficiency: number
-  }
-  strain: number // 0-21
+export interface WhoopDashboard {
+  recovery: WhoopRecovery | null
+  sleep: WhoopSleep | null
+  workouts: WhoopWorkout[]
+  strain: number | null
+  connected: boolean
 }

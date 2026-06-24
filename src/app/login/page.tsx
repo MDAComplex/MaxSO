@@ -4,8 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-const MOCK_MODE = !process.env.NEXT_PUBLIC_SUPABASE_URL
-
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
@@ -13,22 +11,20 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // No Supabase configured → show setup hint
+  const notConfigured = !process.env.NEXT_PUBLIC_SUPABASE_URL
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (notConfigured) return
     setError('')
     setLoading(true)
 
-    if (MOCK_MODE) {
-      // Phase 1 mock login
-      await new Promise((r) => setTimeout(r, 600))
-      router.push('/')
-      return
-    }
-
     const supabase = createClient()
     const { error: err } = await supabase.auth.signInWithPassword({ email, password })
+
     if (err) {
-      setError(err.message)
+      setError('Ungültige Zugangsdaten.')
       setLoading(false)
     } else {
       router.push('/')
@@ -38,57 +34,59 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#111113] border border-[#1F1F23] mb-4">
-            <span className="text-lg font-bold text-[#38BDF8]">M</span>
+      <div className="w-full max-w-[360px]">
+
+        {/* Logo mark */}
+        <div className="flex flex-col items-center mb-12">
+          <div className="w-11 h-11 rounded-2xl bg-[#111113] border border-[#1F1F23] flex items-center justify-center mb-5">
+            <span className="text-[#38BDF8] font-bold text-xl tracking-tight">M</span>
           </div>
-          <h1 className="text-2xl font-semibold text-[#F4F4F5] tracking-tight">Max OS</h1>
-          <p className="text-sm text-[#52525B] mt-1">Private Productivity Suite</p>
+          <h1 className="text-[22px] font-semibold text-[#F4F4F5] tracking-tight">Max OS</h1>
+          <p className="text-sm text-[#3F3F46] mt-1">Privater Bereich</p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
+        {notConfigured ? (
+          <div className="bg-[#111113] border border-[#1F1F23] rounded-2xl p-5 text-center">
+            <p className="text-sm text-[#71717A] leading-relaxed">
+              Supabase noch nicht konfiguriert.<br />
+              Trage <span className="text-[#F4F4F5] font-mono text-xs">NEXT_PUBLIC_SUPABASE_URL</span> und <span className="text-[#F4F4F5] font-mono text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</span> in den Vercel Environment Variables ein.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-3">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={MOCK_MODE ? 'demo@example.com' : 'Email'}
-              required={!MOCK_MODE}
-              className="w-full bg-[#111113] border border-[#1F1F23] rounded-xl px-4 py-3 text-sm text-[#F4F4F5] placeholder-[#3F3F46] outline-none focus:border-[#38BDF8] transition-colors"
+              placeholder="Email"
+              required
+              autoComplete="email"
+              className="w-full bg-[#111113] border border-[#1F1F23] rounded-xl px-4 py-3.5 text-sm text-[#F4F4F5] placeholder-[#3F3F46] outline-none focus:border-[#38BDF8] transition-colors"
             />
-          </div>
-          <div>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder={MOCK_MODE ? 'any password' : 'Passwort'}
-              required={!MOCK_MODE}
-              className="w-full bg-[#111113] border border-[#1F1F23] rounded-xl px-4 py-3 text-sm text-[#F4F4F5] placeholder-[#3F3F46] outline-none focus:border-[#38BDF8] transition-colors"
+              placeholder="Passwort"
+              required
+              autoComplete="current-password"
+              className="w-full bg-[#111113] border border-[#1F1F23] rounded-xl px-4 py-3.5 text-sm text-[#F4F4F5] placeholder-[#3F3F46] outline-none focus:border-[#38BDF8] transition-colors"
             />
-          </div>
 
-          {error && (
-            <p className="text-xs text-red-400 px-1">{error}</p>
-          )}
+            {error && (
+              <p className="text-xs text-red-400 px-1">{error}</p>
+            )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#38BDF8] text-[#0A0A0B] font-semibold rounded-xl py-3 text-sm transition-all hover:bg-[#7DD3FC] disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Einloggen…' : 'Einloggen'}
-          </button>
-        </form>
-
-        {MOCK_MODE && (
-          <p className="text-center text-[10px] text-[#3F3F46] mt-6">
-            Mock-Modus — Supabase noch nicht konfiguriert
-          </p>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-1 bg-[#38BDF8] hover:bg-[#7DD3FC] text-[#0A0A0B] font-semibold rounded-xl py-3.5 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Einloggen…' : 'Einloggen'}
+            </button>
+          </form>
         )}
+
       </div>
     </div>
   )

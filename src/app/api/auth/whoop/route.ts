@@ -12,8 +12,10 @@ export async function GET() {
     client_id: clientId,
     redirect_uri: redirectUri,
     response_type: 'code',
-    scope: 'read:recovery read:sleep read:workout read:profile',
+    scope: 'offline read:recovery read:sleep read:workout read:profile read:cycles read:body_measurement',
   })
 
-  return NextResponse.redirect(`https://api.prod.whoop.com/oauth/oauth2/auth?${params}`)
+  return NextResponse.redirect(
+    `https://api.prod.whoop.com/oauth/oauth2/auth?${params.toString()}`
+  )
 }
