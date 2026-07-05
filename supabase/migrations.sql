@@ -45,3 +45,18 @@ alter table reflections enable row level security;
 create policy if not exists "own rows reflections" on reflections
   for all using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
+
+-- ── USER DATA (generic synced storage: habits, routines, topik, grades, focus) ──
+create table if not exists user_data (
+  user_id uuid references auth.users(id) default auth.uid(),
+  key text not null,
+  data jsonb not null,
+  updated_at timestamptz default now(),
+  primary key (user_id, key)
+);
+
+alter table user_data enable row level security;
+
+create policy if not exists "own rows user_data" on user_data
+  for all using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);

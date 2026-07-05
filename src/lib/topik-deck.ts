@@ -1,0 +1,58 @@
+// TOPIK I Basis-Vokabeln (Level 1) — ko / romanization / de
+export interface TopikWord {
+  id: string
+  ko: string
+  rom: string
+  de: string
+}
+
+export const TOPIK_DECK: TopikWord[] = [
+  { id: 'w01', ko: '안녕하세요', rom: 'annyeonghaseyo', de: 'Hallo (höflich)' },
+  { id: 'w02', ko: '감사합니다', rom: 'gamsahamnida', de: 'Danke (höflich)' },
+  { id: 'w03', ko: '네', rom: 'ne', de: 'Ja' },
+  { id: 'w04', ko: '아니요', rom: 'aniyo', de: 'Nein' },
+  { id: 'w05', ko: '저', rom: 'jeo', de: 'ich (höflich)' },
+  { id: 'w06', ko: '학교', rom: 'hakgyo', de: 'Schule' },
+  { id: 'w07', ko: '대학교', rom: 'daehakgyo', de: 'Universität' },
+  { id: 'w08', ko: '학생', rom: 'haksaeng', de: 'Schüler / Student' },
+  { id: 'w09', ko: '선생님', rom: 'seonsaengnim', de: 'Lehrer/in' },
+  { id: 'w10', ko: '친구', rom: 'chingu', de: 'Freund/in' },
+  { id: 'w11', ko: '물', rom: 'mul', de: 'Wasser' },
+  { id: 'w12', ko: '밥', rom: 'bap', de: 'Reis / Essen' },
+  { id: 'w13', ko: '커피', rom: 'keopi', de: 'Kaffee' },
+  { id: 'w14', ko: '시간', rom: 'sigan', de: 'Zeit' },
+  { id: 'w15', ko: '오늘', rom: 'oneul', de: 'heute' },
+  { id: 'w16', ko: '내일', rom: 'naeil', de: 'morgen' },
+  { id: 'w17', ko: '어제', rom: 'eoje', de: 'gestern' },
+  { id: 'w18', ko: '공부하다', rom: 'gongbuhada', de: 'lernen / studieren' },
+  { id: 'w19', ko: '가다', rom: 'gada', de: 'gehen' },
+  { id: 'w20', ko: '오다', rom: 'oda', de: 'kommen' },
+  { id: 'w21', ko: '먹다', rom: 'meokda', de: 'essen' },
+  { id: 'w22', ko: '마시다', rom: 'masida', de: 'trinken' },
+  { id: 'w23', ko: '보다', rom: 'boda', de: 'sehen' },
+  { id: 'w24', ko: '듣다', rom: 'deutda', de: 'hören' },
+  { id: 'w25', ko: '읽다', rom: 'ikda', de: 'lesen' },
+  { id: 'w26', ko: '쓰다', rom: 'sseuda', de: 'schreiben' },
+  { id: 'w27', ko: '말하다', rom: 'malhada', de: 'sprechen' },
+  { id: 'w28', ko: '자다', rom: 'jada', de: 'schlafen' },
+  { id: 'w29', ko: '일어나다', rom: 'ireonada', de: 'aufstehen' },
+  { id: 'w30', ko: '좋다', rom: 'jota', de: 'gut sein' },
+  { id: 'w31', ko: '나쁘다', rom: 'nappeuda', de: 'schlecht sein' },
+  { id: 'w32', ko: '크다', rom: 'keuda', de: 'groß sein' },
+  { id: 'w33', ko: '작다', rom: 'jakda', de: 'klein sein' },
+  { id: 'w34', ko: '집', rom: 'jip', de: 'Haus / Zuhause' },
+  { id: 'w35', ko: '한국', rom: 'hanguk', de: 'Korea' },
+  { id: 'w36', ko: '한국어', rom: 'hangugeo', de: 'Koreanisch (Sprache)' },
+  { id: 'w37', ko: '사람', rom: 'saram', de: 'Mensch / Person' },
+  { id: 'w38', ko: '이름', rom: 'ireum', de: 'Name' },
+  { id: 'w39', ko: '책', rom: 'chaek', de: 'Buch' },
+  { id: 'w40', ko: '돈', rom: 'don', de: 'Geld' },
+  { id: 'w41', ko: '일', rom: 'il', de: 'Arbeit / Tag' },
+  { id: 'w42', ko: '주말', rom: 'jumal', de: 'Wochenende' },
+  { id: 'w43', ko: '아침', rom: 'achim', de: 'Morgen / Frühstück' },
+  { id: 'w44', ko: '저녁', rom: 'jeonyeok', de: 'Abend / Abendessen' },
+  { id: 'w45', ko: '사랑하다', rom: 'saranghada', de: 'lieben' },
+  { id: 'w46', ko: '알다', rom: 'alda', de: 'wissen / kennen' },
+  { id: 'w47', ko: '모르다', rom: 'moreuda', de: 'nicht wissen' },
+  { id: 'w48', ko: '있다', rom: 'itda', de: 'existieren / haben' },
+]

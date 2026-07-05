@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { useSyncedStorage } from '@/hooks/useSyncedStorage'
 import type { Routine, RoutineStep } from '@/types'
 import { Plus, X, GripVertical, Play, Trash2, Clock, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -25,7 +25,7 @@ interface Props {
 }
 
 export default function RoutineBuilder({ onStart }: Props) {
-  const [routines, setRoutines] = useLocalStorage<Routine[]>('maxos-routines', [])
+  const [routines, setRoutines] = useSyncedStorage<Routine[]>('maxos-routines', [])
   const [creating, setCreating] = useState(false)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [rName, setRName] = useState('')

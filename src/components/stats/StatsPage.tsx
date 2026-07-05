@@ -1,6 +1,6 @@
 'use client'
 
-import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { useSyncedStorage } from '@/hooks/useSyncedStorage'
 import type { Habit, Routine } from '@/types'
 import { differenceInCalendarDays } from 'date-fns'
 import { Flame, Target, TrendingUp, Award, Calendar } from 'lucide-react'
@@ -64,8 +64,8 @@ function HeatMap({ completions, color }: { completions: string[]; color: string 
 }
 
 export default function StatsPage() {
-  const [habits] = useLocalStorage<Habit[]>('maxos-habits', [])
-  const [routines] = useLocalStorage<Routine[]>('maxos-routines', [])
+  const [habits] = useSyncedStorage<Habit[]>('maxos-habits', [])
+  const [routines] = useSyncedStorage<Routine[]>('maxos-routines', [])
 
   const today = todayStr()
   const doneToday = habits.filter((h) => h.completions.includes(today)).length

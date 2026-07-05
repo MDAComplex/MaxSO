@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { useSyncedStorage } from '@/hooks/useSyncedStorage'
 import type { Habit } from '@/types'
 import { Plus, X, Flame, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -36,7 +36,7 @@ function getLast7(completions: string[]): boolean[] {
 }
 
 export default function HabitTracker() {
-  const [habits, setHabits] = useLocalStorage<Habit[]>('maxos-habits', [])
+  const [habits, setHabits] = useSyncedStorage<Habit[]>('maxos-habits', [])
   const [adding, setAdding] = useState(false)
   const [name, setName] = useState('')
   const [emoji, setEmoji] = useState('💪')

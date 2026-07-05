@@ -12,12 +12,21 @@ import ReflectionJournal from '@/components/journal/ReflectionJournal'
 import StatsPage from '@/components/stats/StatsPage'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import CountdownWidget from '@/components/home/CountdownWidget'
-import { LogOut, Home, Map, BookOpen, BarChart2 } from 'lucide-react'
+import MorningBriefing from '@/components/home/MorningBriefing'
+import NotificationCard from '@/components/home/NotificationCard'
+import WarRoom from '@/components/timeline/WarRoom'
+import FocusTimer from '@/components/focus/FocusTimer'
+import TopikTrainer from '@/components/topik/TopikTrainer'
+import WeeklyReview from '@/components/journal/WeeklyReview'
+import YearHeatmap from '@/components/stats/YearHeatmap'
+import GradeTracker from '@/components/stats/GradeTracker'
+import { LogOut, Home, Map, Timer, BookOpen, BarChart2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const TABS = [
   { id: 'home',     label: 'Home',      icon: Home },
   { id: 'timeline', label: 'Timeline',  icon: Map },
+  { id: 'focus',    label: 'Fokus',     icon: Timer },
   { id: 'journal',  label: 'Journal',   icon: BookOpen },
   { id: 'stats',    label: 'Stats',     icon: BarChart2 },
 ] as const
@@ -69,18 +78,38 @@ function Inner() {
           <div className="space-y-4">
             {tab === 'home' && (
               <>
+                <MorningBriefing />
+                <NotificationCard />
                 <HabitTracker />
                 <RoutineBuilder onStart={(r) => setActiveRoutine(r)} />
               </>
             )}
             {tab === 'timeline' && (
               <>
+                <WarRoom />
                 <CountdownWidget />
                 <MilestoneTimeline />
               </>
             )}
-            {tab === 'journal' && <ReflectionJournal />}
-            {tab === 'stats' && <StatsPage />}
+            {tab === 'focus' && (
+              <>
+                <FocusTimer />
+                <TopikTrainer />
+              </>
+            )}
+            {tab === 'journal' && (
+              <>
+                <WeeklyReview />
+                <ReflectionJournal />
+              </>
+            )}
+            {tab === 'stats' && (
+              <>
+                <StatsPage />
+                <YearHeatmap />
+                <GradeTracker />
+              </>
+            )}
           </div>
         </div>
 
